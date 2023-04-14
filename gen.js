@@ -41,15 +41,31 @@ const saveWalletToFile = async (publicKey, privateKey, address, words) => {
     await fs.writeFile("wallet.txt", walletData);
 }
 
+const saveIterationToFile = async (iteration, publicKey, privateKey, address, words) => {
+    const walletData = `Iteration: ${iteration}\nPublic Key: ${publicKey}\nPrivate Key: ${privateKey}\nWords: ${words.join(' ')}\nWallet: ${address}\n\n`;
+
+    await fs.appendFile("iterations.txt", walletData);
+}
+
 const findWalletWithEnding = async (ending) => {
     let address;
     let keyPair;
     let words;
     let found = false;
+    let iteration = 0;
     do {
         ({ keyPair, words } = await createKeyPair());
         address = await createWallet(keyPair);
-        console.log("Trying address:", address.toString(true, true, true)); // Add log to track progress
+        console.log(iteration, ": ", address.toString(true, true, true)); // Add log to track progress
+
+        iteration++;
+        await saveIterationToFile(
+            iteration,
+            TonWeb.utils.bytesToHex(keyPair.publicKey),
+            TonWeb.utils.bytesToHex(keyPair.secretKey),
+            address.toString(true, true, true),
+            words
+        );
 
         found = address.toString(true, true, true).endsWith(ending);
     } while (!found);
@@ -74,6 +90,3 @@ const main = async () => {
     );
 }
 
-main().catch((error) => {
-    console.error("Error:", error);
-});
