@@ -2,7 +2,7 @@ import TonWeb from "tonweb";
 import tonMnemonic from "tonweb-mnemonic";
 import sqlite3 from "sqlite3";
 
-const targetEnding = "_TON"; // Замените на нужное окончание адреса
+const targetEnding = "_MIT"; // Замените на нужное окончание адреса
 
 const createKeyPair = async () => {
     /** @type {string[]} */
